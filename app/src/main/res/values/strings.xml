@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">2048</string>
+    <string name="btn_1">Iniciar</string>
+    <string name="btn_2">Atrás</string>
 </resources>
