@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Debug;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -22,10 +23,17 @@ public class Tablero {
                                                 "41","42","43","44");*/ //posiciones libres
     private List<String> libres;
     private TextView[][] txt;
+    private Context context;
 
-    public Tablero() {
+    private static final int MARCA_FIN = 32;
+    private boolean flagFin;
+
+    public Tablero(Context context) {
         this.tablero = new Ficha[4][4];
         this.posLibres = new int[4][4];
+
+        this.context = context;
+        this.flagFin = false;
 
         libres = new ArrayList<String>();
         libres.add("11");libres.add("12");
@@ -92,31 +100,39 @@ public class Tablero {
     }
 
     public void setFichaAleatoria(){
-        //Crear una ficha con valor 2
-        Ficha f = new Ficha(2);
+        if (this.hayLugar()){
+            //Crear una ficha con valor 2
+            Ficha f = new Ficha(2);
 
-        //Numero random entre 0 y el tamaño de la lista
-        int pos = (int)(Math.random()*libres.size());
+            //Numero random entre 0 y el tamaño de la lista
+            int pos = (int)(Math.random()*libres.size());
 
-        //Obtener dato de la posicion random
-        String posLibre = libres.get(pos);
+            //Obtener dato de la posicion random
+            String posLibre = libres.get(pos);
 
-        //Debug en consola
-        Log.d("POSICIONES","Random pos: "+pos+", get: "+posLibre);
+            //Debug en consola
+            Log.d("POSICIONES","Random pos: "+pos+", get: "+posLibre);
 
-        //Eliminar el elemento extraido en la lista para que queda actualizado (ahora ya no sera una pos libre)
-        libres.remove(pos);
+            //Eliminar el elemento extraido en la lista para que queda actualizado (ahora ya no sera una pos libre)
+            libres.remove(pos);
 
-        //Partir a la mitad el string y convertirlo a int. primer digito es fila, segundo digito es columna
-        int fila = Integer.parseInt(posLibre.substring(0,1));
-        int columna = Integer.parseInt(posLibre.substring(1));
+            //Partir a la mitad el string y convertirlo a int. primer digito es fila, segundo digito es columna
+            int fila = Integer.parseInt(posLibre.substring(0,1));
+            int columna = Integer.parseInt(posLibre.substring(1));
 
-        //Debug en consola
-        Log.d("POSICIONES","fila: "+fila+", columna: "+columna);
+            //Debug en consola
+            Log.d("POSICIONES","fila: "+fila+", columna: "+columna);
 
-        //Ubicar la ficha en la posicion y actualizar matriz de posiciones libres.
-        this.tablero[fila-1][columna-1] = f;
-        this.posLibres[fila-1][columna-1]  = 1; //  1=ocupada
+            //Ubicar la ficha en la posicion y actualizar matriz de posiciones libres.
+            this.tablero[fila-1][columna-1] = f;
+            this.posLibres[fila-1][columna-1]  = 1; //  1=ocupada
+        } else {
+            Toast.makeText(this.context, "No hay posiciones vacias para realizar este movimiento", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private Boolean hayLugar(){
+        return !libres.isEmpty();
     }
 
     public void actualizarTablero(){
@@ -138,6 +154,10 @@ public class Tablero {
                     this.txt[i][j].setText("");
                 }
             }
+        }
+
+        if (this.flagFin){
+            Toast.makeText(this.context, "WIN!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -173,6 +193,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                                     this.tablero[i][j].setFlag(1);
+
+                                    //Controlar puntaje ganador
+                                    if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+
                                     //La posicion siguiente queda null porque fue combinada con la actual
                                     this.tablero[posSig][j] = null;
 
@@ -198,6 +222,7 @@ public class Tablero {
                 }
             }
         }
+
         this.resetFlags();
         this.setFichaAleatoria();
         this.actualizarTablero();
@@ -223,6 +248,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[posSig][j].getValor());
                                     this.tablero[i][j].setFlag(1);
+
+                                    //Controlar puntaje ganador
+                                    if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+
                                     //La posicion siguiente queda null porque fue convinada con la actual
                                     this.tablero[posSig][j] = null;
 
@@ -272,6 +301,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[i][posSig].getValor());
                                     this.tablero[i][j].setFlag(1);
+
+                                    //Controlar puntaje ganador
+                                    if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+
                                     //La posicion siguiente queda null porque fue convinada con la actual
                                     this.tablero[i][posSig] = null;
 
@@ -320,6 +353,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[i][posSig].getValor());
                                     this.tablero[i][j].setFlag(1);
+
+                                    //Controlar puntaje ganador
+                                    if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+
                                     //La posicion siguiente queda null porque fue convinada con la actual
                                     this.tablero[i][posSig] = null;
 

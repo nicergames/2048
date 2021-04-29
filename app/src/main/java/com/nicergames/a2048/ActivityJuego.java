@@ -34,7 +34,7 @@ public class ActivityJuego extends AppCompatActivity {
         txt41 = findViewById(R.id.c41); txt42 = findViewById(R.id.c42);
         txt43 = findViewById(R.id.c43); txt44 = findViewById(R.id.c44);
 
-        Tablero tablero = new Tablero();
+        Tablero tablero = new Tablero(this);
 
         tablero.setComponentes(txt11, txt12, txt13, txt14,
                 txt21, txt22, txt23, txt24,
