@@ -13,6 +13,15 @@ public class Ficha {
         return valor;
     }
 
+    public void setFlag(int flag){
+        this.flag = flag;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+
     public Ficha(/*int id*/){
         //this.id = id;
         this.flag = 0;
