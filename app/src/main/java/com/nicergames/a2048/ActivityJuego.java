@@ -24,6 +24,7 @@ public class ActivityJuego extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_juego);
+        getSupportActionBar().hide();
 
         txt11 = findViewById(R.id.c11); txt12 = findViewById(R.id.c12);
         txt13 = findViewById(R.id.c13); txt14 = findViewById(R.id.c14);
@@ -78,7 +79,7 @@ public class ActivityJuego extends AppCompatActivity {
         });
 
 
-        // Se implementa el boton atras para volver al MainMenu
+        // Boton atras para volver al MainMenu
         /*
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -89,8 +90,10 @@ public class ActivityJuego extends AppCompatActivity {
         */
     }
 
+    /*
     public void openMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+     */
 }

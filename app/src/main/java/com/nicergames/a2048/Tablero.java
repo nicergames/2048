@@ -15,26 +15,21 @@ import java.util.Random;
 
 public class Tablero {
     private Ficha[][] tablero;
-    private int[][] posLibres; //guardo posiciones libres
-    //private ArrayList<String> libres = new ArrayList<String>();
-    /*private List<String> libres = Arrays.asList("11","12","13","14",
-                                                "21","22","23","24",
-                                                "31","32","33","34",
-                                                "41","42","43","44");*/ //posiciones libres
+    private int[][] posLibres;
     private List<String> libres;
     private TextView[][] txt;
     private Context context;
-
-    private static final int MARCA_FIN = 32;
+    private static final int MARCA_FIN = 32; //Puntaje objetivo para ganar
     private boolean flagFin;
 
     public Tablero(Context context) {
         this.tablero = new Ficha[4][4];
         this.posLibres = new int[4][4];
 
-        this.context = context;
-        this.flagFin = false;
+        this.context = context; //Contexto para los Toast
+        this.flagFin = false; //Flag de finalizacion
 
+        //Inicio de lista, todas las posiciones libres
         libres = new ArrayList<String>();
         libres.add("11");libres.add("12");
         libres.add("13");libres.add("14");
@@ -46,15 +41,12 @@ public class Tablero {
         libres.add("43");libres.add("44");
 
 
-        //inicio posiciones libres. 0 lire, 1 ocupado
+        //inicio de matriz de posiciones libres. 0 lire, 1 ocupado
         for (int i=0; i < this.tablero.length; i++) {
             for (int j=0; j < this.tablero[i].length; j++) {
                 this.posLibres[i][j] = 0;
-                //this.libres.add(i+""+j);
             }
         }
-
-
     }
 
     public void setComponentes(TextView txt11, TextView txt12, TextView txt13, TextView txt14,
@@ -83,6 +75,8 @@ public class Tablero {
         this.txt[3][3] = txt44;
     }
 
+
+
     public void setFichaAleatoria(Ficha f){
         int pos = (int)(Math.random()*libres.size());
         String posLibre = libres.get(pos);
@@ -91,7 +85,6 @@ public class Tablero {
         int fila = Integer.parseInt(posLibre.substring(0,1));
         int columna = Integer.parseInt(posLibre.substring(1));
         Log.i("POSICIONES","fila: "+fila+", columna: "+columna);
-
 
         this.tablero[fila-1][columna-1] = f;
         this.posLibres[fila-1][columna-1]  = 1;
@@ -172,6 +165,7 @@ public class Tablero {
         }
     }
 
+    //El metodo UP tiene mayor nivel de detalle en los comentarios
     public void up(){
         Log.i("MOVIMIENTOS","UP");
         int posSig, _i, _j, _pSig; //Variables auxiliares
@@ -227,14 +221,14 @@ public class Tablero {
         this.setFichaAleatoria();
         this.actualizarTablero();
     }
-
     public void down(){
+
         Log.d("MOVIMIENTOS","DOWN");
         int posSig, _i, _j, _pSig;
 
-        for (int j=0; j < this.tablero[0].length; j++) { //cantidad de columnas
-            for (int k=0; k < this.tablero[0].length; k++){ //repetir movimientos celda x celda
-                for (int i=this.tablero.length-1; i > 0; i--) { //filas
+        for (int j=0; j < this.tablero[0].length; j++) {
+            for (int k=0; k < this.tablero[0].length; k++){
+                for (int i=this.tablero.length-1; i > 0; i--) {
                     posSig = i-1; _i = i +1; _j = j +1; _pSig = posSig+1;
                     Ficha sig = this.tablero[posSig][j];
                     Ficha act = this.tablero[i][j];
@@ -280,7 +274,6 @@ public class Tablero {
         this.setFichaAleatoria();
         this.actualizarTablero();
     }
-
     public void left(){
         Log.d("MOVIMIENTOS","LEFT");
         int posSig, _i, _j, _pSig;
