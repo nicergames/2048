@@ -4,17 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ActivityJuego extends AppCompatActivity {
 
     private TextView txt11,txt12,txt13,txt14,
             txt21,txt22,txt23,txt24,
             txt31,txt32,txt33,txt34,
-            txt41,txt42,txt43,txt44;
+            txt41,txt42,txt43,txt44, txtPuntaje;
 
     private ImageView btnUp, btnDown, btnLeft, btnRight;
 
@@ -35,18 +38,21 @@ public class ActivityJuego extends AppCompatActivity {
         txt41 = findViewById(R.id.c41); txt42 = findViewById(R.id.c42);
         txt43 = findViewById(R.id.c43); txt44 = findViewById(R.id.c44);
 
-        Tablero tablero = new Tablero(this);
+        txtPuntaje = findViewById(R.id.txt_puntaje);
 
+        Tablero tablero = new Tablero(this);
         tablero.setComponentes(txt11, txt12, txt13, txt14,
                 txt21, txt22, txt23, txt24,
                 txt31, txt32, txt33, txt34,
                 txt41, txt42, txt43, txt44);
+
 
         //crear 2 fichas en pos aleatorias (estan todas libres)
         Ficha f1 = new Ficha(2);
         Ficha f2 = new Ficha(2);
         tablero.setFichaAleatoria(f1);
         tablero.setFichaAleatoria(f2);
+
 
         btnUp = findViewById(R.id.arrowUp);
         btnDown = findViewById(R.id.arrowDown);
@@ -56,25 +62,93 @@ public class ActivityJuego extends AppCompatActivity {
         btnUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tablero.up();
+                Thread hilo = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int k=0; k < 4; k++){
+                            for (int j = 0; j < 4; j++) {
+                                tablero.up2(j);
+                                tablero.actualizarTablero();
+                                txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
+                                try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                            }
+                        }
+                        try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                        tablero.afterMov();
+                    }
+                });
+                hilo.start();
+
+                //tablero.up();
             }
         });
         btnDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tablero.down();
+                Thread hilo = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int k=0; k < 4; k++){
+                            for (int j = 0; j < 4; j++) {
+                                tablero.down2(j);
+                                tablero.actualizarTablero();
+                                txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
+                                try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                            }
+                        }
+                        try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                        tablero.afterMov();
+                    }
+                });
+                hilo.start();
+
+                //tablero.down();
             }
         });
         btnLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tablero.left();
+                Thread hilo = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int k=0; k < 4; k++){
+                            for (int i = 0; i < 4; i++) {
+                                tablero.left2(i);
+                                tablero.actualizarTablero();
+                                txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
+                                try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                            }
+                        }
+                        try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                        tablero.afterMov();
+                    }
+                });
+                hilo.start();
+
+                //tablero.left();
             }
         });
         btnRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tablero.right();
+                Thread hilo = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int k=0; k < 4; k++){
+                            for (int i = 0; i < 4; i++) {
+                                tablero.right2(i);
+                                tablero.actualizarTablero();
+                                txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
+                                try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                            }
+                        }
+                        try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                        tablero.afterMov();
+                    }
+                });
+                hilo.start();
+
+                //tablero.right();
             }
         });
 
