@@ -67,19 +67,17 @@ public class ActivityJuego extends AppCompatActivity {
                     public void run() {
                         for (int k=0; k < 4; k++){
                             for (int j = 0; j < 4; j++) {
-                                tablero.up2(j);
+                                tablero.up(j);
                                 tablero.actualizarTablero();
                                 txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
-                                try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                                try { Thread.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
                             }
                         }
-                        try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                        try { Thread.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
                         tablero.afterMov();
                     }
                 });
                 hilo.start();
-
-                //tablero.up();
             }
         });
         btnDown.setOnClickListener(new View.OnClickListener() {
@@ -90,19 +88,17 @@ public class ActivityJuego extends AppCompatActivity {
                     public void run() {
                         for (int k=0; k < 4; k++){
                             for (int j = 0; j < 4; j++) {
-                                tablero.down2(j);
+                                tablero.down(j);
                                 tablero.actualizarTablero();
                                 txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
-                                try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                                try { Thread.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
                             }
                         }
-                        try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                        try { Thread.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
                         tablero.afterMov();
                     }
                 });
                 hilo.start();
-
-                //tablero.down();
             }
         });
         btnLeft.setOnClickListener(new View.OnClickListener() {
@@ -113,19 +109,17 @@ public class ActivityJuego extends AppCompatActivity {
                     public void run() {
                         for (int k=0; k < 4; k++){
                             for (int i = 0; i < 4; i++) {
-                                tablero.left2(i);
+                                tablero.left(i);
                                 tablero.actualizarTablero();
                                 txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
-                                try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                                try { Thread.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
                             }
                         }
-                        try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                        try { Thread.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
                         tablero.afterMov();
                     }
                 });
                 hilo.start();
-
-                //tablero.left();
             }
         });
         btnRight.setOnClickListener(new View.OnClickListener() {
@@ -136,19 +130,18 @@ public class ActivityJuego extends AppCompatActivity {
                     public void run() {
                         for (int k=0; k < 4; k++){
                             for (int i = 0; i < 4; i++) {
-                                tablero.right2(i);
+                                tablero.right(i);
                                 tablero.actualizarTablero();
                                 txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
-                                try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                                try { Thread.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
                             }
                         }
-                        try { Thread.sleep(5); } catch (InterruptedException e) { e.printStackTrace(); }
+                        try { Thread.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
                         tablero.afterMov();
                     }
                 });
                 hilo.start();
 
-                //tablero.right();
             }
         });
 

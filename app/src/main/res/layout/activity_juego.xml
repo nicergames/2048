@@ -375,7 +375,7 @@
                 android:background="@drawable/round_btn"
                 android:gravity="center"
                 android:text="@string/btn_2"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
