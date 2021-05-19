@@ -146,7 +146,6 @@ public class Tablero {
 
             //Ubicar la ficha en la posicion y actualizar matriz de posiciones libres.
             this.tablero[fila-1][columna-1] = f;
-            int w = obtenerColor(0,0,this.tablero[fila-1][columna-1].getValor());
             this.posLibres[fila-1][columna-1]  = 1; //  1=ocupada
         } else {
             Toast.makeText(this.context, "No hay posiciones vacias para realizar este movimiento", Toast.LENGTH_SHORT).show();
@@ -157,18 +156,15 @@ public class Tablero {
         return !libres.isEmpty();
     }
 
-    public static int obtenerColor(int k, int aux, int numero){
-        if (numero==2) {
-            k=k+1;
-        } else if (numero%2 != 0){
-            k=k+1;
-            aux=numero/10;
-            numero=aux;
-            obtenerColor(k, aux, numero);
-        }
-        return k;
+    public int obtenerColor(int numero){
+       int k;
+       k=0;
+       while (numero > 1){
+           k=k+1;
+           numero=numero/2;
     }
-
+    return k;
+}
     public void actualizarTablero(){
         /*
         //Debug de posiciones libres (lista)
@@ -244,11 +240,10 @@ public class Tablero {
                             //Setear el valor de la ficha actual con la suma de actual + siguiente
                             this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                             this.tablero[i][j].setFlag(1);
-                            int w = obtenerColor(0, 0,this.tablero[i][j].getValor());
+                            int w = obtenerColor(this.tablero[i][j].getValor());
                             this.puntaje = this.puntaje + this.tablero[i][j].getValor();
 
                             this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
-                            this.txt[i][posSig].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                             //Controlar puntaje ganador
                             if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -295,11 +290,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                                     this.tablero[i][j].setFlag(1);
-                                    final int w = obtenerColor(0,0,this.tablero[i][j].getValor());
+                                    int w = obtenerColor(this.tablero[i][j].getValor());
                                     this.puntaje = this.puntaje + this.tablero[i][j].getValor();
 
                                     this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
-                                    this.txt[i][posSig].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
                                     if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -344,11 +338,10 @@ public class Tablero {
                             //Setear el valor de la ficha actual con la suma de actual + siguiente
                             this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                             this.tablero[i][j].setFlag(1);
-                            int w = obtenerColor(0,0,this.tablero[i][j].getValor());
+                            int w = obtenerColor(this.tablero[i][j].getValor());
                             this.puntaje = this.puntaje + this.tablero[i][j].getValor();
 
                             this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
-                            this.txt[i][posSig].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                             //Controlar puntaje ganador
                             if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -393,11 +386,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                                     this.tablero[i][j].setFlag(1);
-                                    final int w = obtenerColor(0,0,this.tablero[i][j].getValor());
+                                    int w = obtenerColor(this.tablero[i][j].getValor());
                                     this.puntaje = this.puntaje + this.tablero[i][j].getValor();
 
                                     this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
-                                    this.txt[i][posSig].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
                                     if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -454,11 +446,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                                     this.tablero[i][j].setFlag(1);
-
+                                    int w = obtenerColor(this.tablero[i][j].getValor());
                                     this.puntaje = this.puntaje + this.tablero[i][j].getValor();
-                                    //this.txt[i][j].setBackgroundColor(Color.parseColor(colores[k]));
 
-
+                                    this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
                                     if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -512,7 +503,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[posSig][j].getValor());
                                     this.tablero[i][j].setFlag(1);
+                                    int w = obtenerColor(this.tablero[i][j].getValor());
                                     this.puntaje = this.puntaje + this.tablero[i][j].getValor();
+
+                                    this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
                                     if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -566,7 +560,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[i][posSig].getValor());
                                     this.tablero[i][j].setFlag(1);
+                                    int w = obtenerColor(this.tablero[i][j].getValor());
                                     this.puntaje = this.puntaje + this.tablero[i][j].getValor();
+
+                                    this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
                                     if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -618,7 +615,10 @@ public class Tablero {
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
                                     this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[i][posSig].getValor());
                                     this.tablero[i][j].setFlag(1);
+                                    int w = obtenerColor(this.tablero[i][j].getValor());
                                     this.puntaje = this.puntaje + this.tablero[i][j].getValor();
+
+                                    this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
                                     if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
