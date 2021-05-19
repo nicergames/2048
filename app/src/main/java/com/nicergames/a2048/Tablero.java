@@ -1,18 +1,12 @@
 package com.nicergames.a2048;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Debug;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class Tablero {
     private Ficha[][] tablero; //matriz de fichas
@@ -162,6 +156,16 @@ public class Tablero {
         return !libres.isEmpty();
     }
 
+    public static int obtenerColor(int k, int numero){
+        if (numero%2 != 0){
+            k=k+1;
+            numero=numero/10;
+            obtenerColor(k, numero);
+        } else if (numero==2) {
+            k=k+1; }
+        return k;
+    }
+
     public void actualizarTablero(){
         /*
         //Debug de posiciones libres (lista)
@@ -237,10 +241,10 @@ public class Tablero {
                             //Setear el valor de la ficha actual con la suma de actual + siguiente
                             this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                             this.tablero[i][j].setFlag(1);
-
+                            final int w = obtenerColor(0, this.tablero[i][j].getValor());
                             this.puntaje = this.puntaje + this.tablero[i][j].getValor();
-                            //this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[1]);
 
+                            this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
 
                             //Controlar puntaje ganador
                             if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
@@ -286,9 +290,12 @@ public class Tablero {
                                 //verificar flag antes de sumar
                                 if (this.tablero[i][j].getFlag() == 0 && this.tablero[posSig][j].getFlag() == 0){
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
-                                    this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[posSig][j].getValor());
+                                    this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                                     this.tablero[i][j].setFlag(1);
+                                    final int w = obtenerColor(0,this.tablero[i][j].getValor());
                                     this.puntaje = this.puntaje + this.tablero[i][j].getValor();
+
+                                    this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
                                     if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -331,9 +338,12 @@ public class Tablero {
                         //verificar flag antes de sumar
                         if (this.tablero[i][j].getFlag() == 0 && this.tablero[i][posSig].getFlag() == 0){
                             //Setear el valor de la ficha actual con la suma de actual + siguiente
-                            this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[i][posSig].getValor());
+                            this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                             this.tablero[i][j].setFlag(1);
+                            final int w = obtenerColor(0,this.tablero[i][j].getValor());
                             this.puntaje = this.puntaje + this.tablero[i][j].getValor();
+
+                            this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                             //Controlar puntaje ganador
                             if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -376,9 +386,12 @@ public class Tablero {
                                 //verificar flag antes de sumar
                                 if (this.tablero[i][j].getFlag() == 0 && this.tablero[i][posSig].getFlag() == 0){
                                     //Setear el valor de la ficha actual con la suma de actual + siguiente
-                                    this.tablero[i][j].setValor(this.tablero[i][j].getValor() + this.tablero[i][posSig].getValor());
+                                    this.tablero[i][j].setValor(act.getValor() + sig.getValor());
                                     this.tablero[i][j].setFlag(1);
+                                    final int w = obtenerColor(0,this.tablero[i][j].getValor());
                                     this.puntaje = this.puntaje + this.tablero[i][j].getValor();
+
+                                    this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
                                     if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
@@ -633,3 +646,5 @@ public class Tablero {
     }
 
 }
+
+
