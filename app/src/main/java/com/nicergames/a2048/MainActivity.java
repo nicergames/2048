@@ -30,8 +30,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openJuego() {
-        Intent intent = new Intent(this, ActivityJuego.class);
-        startActivity(intent);
+        Intent i = new Intent(this, ActivityJuego.class);
+        //startActivity(intent);
+        startActivityForResult(i, 5);
     }
 
 

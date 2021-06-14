@@ -12,24 +12,26 @@ public class Tablero {
     private Ficha[][] tablero; //matriz de fichas
     private int[][] posLibres; //matriz de posiciones libres (0 libre o 1 ocupado)
     private List<String> libres; //Lista de posiciones libres
-
     private TextView[][] txt; //Matriz de textviews
     private Context context; //contexto/actividad
     private static final int MARCA_FIN = 32; //Puntaje objetivo para ganar
     private boolean flagFin;
+    private boolean mover;
 
     private static int puntaje = 0;
-
     private int[] colores;
 
     public Tablero(Context context) {
-        this.tablero = new Ficha[4][4];
-        this.posLibres = new int[4][4];
+        //this.tablero = new Ficha[4][4];
+        //this.posLibres = new int[4][4];
+        //this.context = context; //Contexto para los Toast
+        //this.flagFin = false; //Flag de finalizacion
 
-        this.context = context; //Contexto para los Toast
-        this.flagFin = false; //Flag de finalizacion
+        //this.puntaje = 0;
+        //this.mover = false;
 
         //Inicio de lista, todas las posiciones libres
+        /*
         libres = new ArrayList<String>();
         libres.add("11");libres.add("12");
         libres.add("13");libres.add("14");
@@ -39,21 +41,52 @@ public class Tablero {
         libres.add("33");libres.add("34");
         libres.add("41");libres.add("42");
         libres.add("43");libres.add("44");
+         */
 
         this.colores = context.getResources().getIntArray(R.array.background_numbers);
-        //colores = context.getResources().getStringArray(R.array.background_numbers);
-        //Log.i("Colores", context.getResources().getStringArray(R.array.background_numbers)[1]+"");
-        //Log.i("COLORES", context.getResources().getColor(R.color.md_2)+"");
-        //String id[] = context.getResources().getStringArray(R.array.background_numbers);
-        //Log.i("COLORES", context.getResources().getIntArray(R.array.background_numbers)[1]+"");
-        //getColor(R.color.md_2)
 
         //inicio de matriz de posiciones libres. 0 lire, 1 ocupado
+        /*
         for (int i=0; i < this.tablero.length; i++) {
             for (int j=0; j < this.tablero[i].length; j++) {
                 this.posLibres[i][j] = 0;
             }
         }
+        */
+
+        this.inicializar();
+    }
+
+
+    private void inicializar(){
+        this.tablero = new Ficha[4][4];
+        this.posLibres = new int[4][4];
+        this.flagFin = false; //Flag de finalizacion
+        this.puntaje = 0;
+        this.mover = false;
+        libres = new ArrayList<String>();
+        libres.add("11");libres.add("12");
+        libres.add("13");libres.add("14");
+        libres.add("21");libres.add("22");
+        libres.add("23");libres.add("24");
+        libres.add("31");libres.add("32");
+        libres.add("33");libres.add("34");
+        libres.add("41");libres.add("42");
+        libres.add("43");libres.add("44");
+        for (int i=0; i < this.tablero.length; i++) {
+            for (int j=0; j < this.tablero[i].length; j++) {
+                this.posLibres[i][j] = 0;
+            }
+        }
+    }
+
+    public void reiniciar(){
+        this.inicializar();
+        Ficha f1 = new Ficha(2);
+        Ficha f2 = new Ficha(2);
+        this.setFichaAleatoria(f1);
+        this.setFichaAleatoria(f2);
+        //this.actualizarTablero();
     }
 
     public void setComponentes(TextView txt11, TextView txt12, TextView txt13, TextView txt14,
@@ -119,8 +152,16 @@ public class Tablero {
     public void setFichaAleatoria(){
         if (this.hayLugar()){
 
+            int valF = (int)(Math.random()*100);
+            //Log.v("PORCENTAJE","%"+valF);
+            if (valF > 10){
+                valF = 2;
+            } else {
+                valF = 4;
+            }
+
             //Crear una ficha con valor 2
-            Ficha f = new Ficha(2);
+            Ficha f = new Ficha(valF);
 
             //this.setFichaAleatoria(f);
 
@@ -159,16 +200,14 @@ public class Tablero {
 
     public int obtenerColor(int numero){
        int k = 0;
-       //while (numero > 1){
        while (numero%2 == 0 && numero > 0){
-           //Log.d("obtenerColorA",numero+", "+k);
            k=k+1;
            numero=numero/2;
-           //Log.d("obtenerColorD",numero+", "+k);
        }
        if (k > 11) { k = 11; }
        return k;
     }
+
     public void actualizarTablero(){
         int w = 0;
         //Recorrer matriz para actualizar valores de textviews
@@ -211,6 +250,7 @@ public class Tablero {
             Ficha sig = this.tablero[posSig][j]; //Ficha siguiente
             Ficha act = this.tablero[i][j]; //Ficha actual
             if (sig != null){ //si el siguiente tiene ficha
+
                 if (act != null) { //si la posicion actual tiene ficha
                     //si ambas posiciones tienen ficha, verifico si tiene el mismo valor para sumarlos
                     if (act.getValor() == sig.getValor()){
@@ -239,9 +279,12 @@ public class Tablero {
                             //Actualizo posiciones ocupadas en la matriz
                             this.posLibres[i][j]=1; //ocupada
                             this.posLibres[posSig][j]=0; //libre
+
+                            this.mover = true;
                         }
                     }
                 } else {
+                    this.mover = true;
                     this.tablero[i][j] = sig; //actual = siguiente
                     this.tablero[posSig][j] = null; //siguiente = null
                     this.libres.add(_pSig+""+_j);
@@ -249,6 +292,7 @@ public class Tablero {
                     this.posLibres[i][j]=1;
                     this.posLibres[posSig][j]=0;
                 }
+
             }
 
         }
@@ -257,48 +301,53 @@ public class Tablero {
         Log.d("MOVIMIENTOS","DOWN");
         int posSig, _i, _j, _pSig;
         for (int i=this.tablero.length-1; i > 0; i--) {
-                    posSig = i-1; _i = i +1; _j = j +1; _pSig = posSig+1;
-                    Ficha sig = this.tablero[posSig][j];
-                    Ficha act = this.tablero[i][j];
-                    if (sig != null){ //si el proximo a la posicion actual tiene ficha
-                        if (act != null) { //si la posicion actual tiene ficha
-                            //si ambas posiciones tiene ficha, verifico si tiene el mismo valor para sumarlos
-                            if (act.getValor() == sig.getValor()){
-                                Log.d("FLAG", "Ficha actual: ("+i+j+"), y ficha siguiente: ("+posSig+j+") son iguales. Flags: "+act.getFlag()+" y "+sig.getFlag());
-                                //verificar flag antes de sumar
-                                if (this.tablero[i][j].getFlag() == 0 && this.tablero[posSig][j].getFlag() == 0){
-                                    //Setear el valor de la ficha actual con la suma de actual + siguiente
-                                    this.tablero[i][j].setValor(act.getValor() + sig.getValor());
-                                    this.tablero[i][j].setFlag(1);
-                                    //int w = obtenerColor(this.tablero[i][j].getValor());
-                                    this.puntaje = this.puntaje + this.tablero[i][j].getValor();
+            posSig = i-1; _i = i +1; _j = j +1; _pSig = posSig+1;
+            Ficha sig = this.tablero[posSig][j];
+            Ficha act = this.tablero[i][j];
+            if (sig != null){ //si el proximo a la posicion actual tiene ficha
 
-                                    //this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
-                                    //Controlar puntaje ganador
-                                    if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+                if (act != null) { //si la posicion actual tiene ficha
+                    //si ambas posiciones tiene ficha, verifico si tiene el mismo valor para sumarlos
+                    if (act.getValor() == sig.getValor()){
+                        Log.d("FLAG", "Ficha actual: ("+i+j+"), y ficha siguiente: ("+posSig+j+") son iguales. Flags: "+act.getFlag()+" y "+sig.getFlag());
+                        //verificar flag antes de sumar
+                        if (this.tablero[i][j].getFlag() == 0 && this.tablero[posSig][j].getFlag() == 0){
+                            //Setear el valor de la ficha actual con la suma de actual + siguiente
+                            this.tablero[i][j].setValor(act.getValor() + sig.getValor());
+                            this.tablero[i][j].setFlag(1);
+                            //int w = obtenerColor(this.tablero[i][j].getValor());
+                            this.puntaje = this.puntaje + this.tablero[i][j].getValor();
 
-                                    //La posicion siguiente queda null porque fue convinada con la actual
-                                    this.tablero[posSig][j] = null;
+                            //this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
+                            //Controlar puntaje ganador
+                            if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
 
-                                    //Añadir a lista de posiciones libres el lugar de la ficha quitada (sig) (+1 todos)
-                                    this.libres.add(_pSig+""+_j);
-                                    this.libres.remove(_i+""+_j);
-
-                                    //Actualizo posiciones ocupadas en la matriz
-                                    this.posLibres[i][j]=1;
-                                    this.posLibres[posSig][j]=0;
-                                }
-                            }
-                        } else {
-                            this.tablero[i][j] = sig; //actual = siguiente
+                            //La posicion siguiente queda null porque fue convinada con la actual
                             this.tablero[posSig][j] = null;
+
+                            //Añadir a lista de posiciones libres el lugar de la ficha quitada (sig) (+1 todos)
                             this.libres.add(_pSig+""+_j);
                             this.libres.remove(_i+""+_j);
+
+                            //Actualizo posiciones ocupadas en la matriz
                             this.posLibres[i][j]=1;
                             this.posLibres[posSig][j]=0;
+
+                            this.mover = true;
                         }
                     }
+                } else {
+                    this.tablero[i][j] = sig; //actual = siguiente
+                    this.tablero[posSig][j] = null;
+                    this.libres.add(_pSig+""+_j);
+                    this.libres.remove(_i+""+_j);
+                    this.posLibres[i][j]=1;
+                    this.posLibres[posSig][j]=0;
+
+                    this.mover = true;
                 }
+            }
+        }
     }
     public void left(int i){
         Log.d("MOVIMIENTOS","LEFT");
@@ -334,6 +383,8 @@ public class Tablero {
                             //Actualizo posiciones ocupadas en la matriz
                             this.posLibres[i][j]=1;
                             this.posLibres[i][posSig]=0;
+
+                            this.mover = true;
                         }
                     }
                 } else {
@@ -343,6 +394,8 @@ public class Tablero {
                     this.libres.remove(_i+""+_j);
                     this.posLibres[i][j]=1;
                     this.posLibres[i][posSig]=0;
+
+                    this.mover = true;
                 }
             }
         }
@@ -381,6 +434,8 @@ public class Tablero {
                                     //Actualizo posiciones ocupadas en la matriz
                                     this.posLibres[i][j]=1;
                                     this.posLibres[i][posSig]=0;
+
+                                    this.mover = true;
                                 }
                             }
                         } else {
@@ -390,6 +445,8 @@ public class Tablero {
                             this.libres.remove(_i+""+_j);
                             this.posLibres[i][j]=1;
                             this.posLibres[i][posSig]=0;
+
+                            this.mover = true;
                         }
                     }
                 }
@@ -397,8 +454,12 @@ public class Tablero {
 
     public void afterMov(){
         this.resetFlags();
-        this.setFichaAleatoria();
-        this.actualizarTablero();
+        if (this.mover){
+            this.setFichaAleatoria();
+            this.actualizarTablero();
+            this.mover = false;
+        }
+
     }
 
 
