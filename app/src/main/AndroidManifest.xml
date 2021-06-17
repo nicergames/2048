@@ -19,6 +19,8 @@
         </activity>
         <activity
             android:name=".ActivityJuego"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
     </application>
 

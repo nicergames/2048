@@ -1,9 +1,16 @@
 package com.nicergames.a2048;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,7 +18,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button button;
+    private Button button, btnExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +29,15 @@ public class MainActivity extends AppCompatActivity {
 
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
                 openJuego();
+            }
+        });
+
+        btnExit = (Button) findViewById(R.id.exit);
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }
@@ -35,5 +48,37 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, 5);
     }
 
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.confirmacion)
+                .setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //
+                    }
+                });
+        builder.show();
+        //super.onBackPressed();
+    }
 
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
+        //super.onSaveInstanceState(outState, outPersistentState);
+        //outState.putString("estado", tablero.crearJSON());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        //String str = savedInstanceState.getString("estado");
+        //Log.d("JSON", str+"");
+    }
 }

@@ -24,4 +24,9 @@ public class Ficha {
         this.flag = 0;
         this.valor = valor;
     }
+
+    public Ficha(int valor, int flag){
+        this.flag = flag;
+        this.valor = valor;
+    }
 }

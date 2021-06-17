@@ -1,12 +1,22 @@
 package com.nicergames.a2048;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Tablero {
     private Ficha[][] tablero; //matriz de fichas
@@ -22,37 +32,7 @@ public class Tablero {
     private int[] colores;
 
     public Tablero(Context context) {
-        //this.tablero = new Ficha[4][4];
-        //this.posLibres = new int[4][4];
-        //this.context = context; //Contexto para los Toast
-        //this.flagFin = false; //Flag de finalizacion
-
-        //this.puntaje = 0;
-        //this.mover = false;
-
-        //Inicio de lista, todas las posiciones libres
-        /*
-        libres = new ArrayList<String>();
-        libres.add("11");libres.add("12");
-        libres.add("13");libres.add("14");
-        libres.add("21");libres.add("22");
-        libres.add("23");libres.add("24");
-        libres.add("31");libres.add("32");
-        libres.add("33");libres.add("34");
-        libres.add("41");libres.add("42");
-        libres.add("43");libres.add("44");
-         */
-
         this.colores = context.getResources().getIntArray(R.array.background_numbers);
-
-        //inicio de matriz de posiciones libres. 0 lire, 1 ocupado
-        /*
-        for (int i=0; i < this.tablero.length; i++) {
-            for (int j=0; j < this.tablero[i].length; j++) {
-                this.posLibres[i][j] = 0;
-            }
-        }
-        */
 
         this.inicializar();
     }
@@ -118,6 +98,11 @@ public class Tablero {
     public int getPuntaje(){
         return this.puntaje;
     }
+
+    public void setPuntaje(int puntaje){
+        this.puntaje = puntaje;
+    }
+
     public Ficha[][] getTablero(){
         return this.tablero;
     }
@@ -225,6 +210,7 @@ public class Tablero {
         }
 
         if (this.flagFin){
+            //TODO: borrar ultimo estado de partida
             //Toast.makeText(this.context, "WIN!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -459,9 +445,46 @@ public class Tablero {
             this.actualizarTablero();
             this.mover = false;
         }
-
     }
 
+
+    public String crearJSON(){
+        JSONObject json = new JSONObject();
+        int k = 0;
+        try {
+            json.put("puntaje", this.puntaje);
+            JSONArray jsonFichas = new JSONArray();
+            //Json de "Fichas" esta formado por: Valor, Flag, Posicion I y Posicion J
+            for (int i=0; i < 4; i++) {
+                for (int j=0; j < 4; j++) {
+                    if (this.tablero[i][j] instanceof Ficha){ //Si esta ocupada la posicion guardo json de ficha
+                        JSONObject jFicha = new JSONObject();
+                        jFicha.put("valor", this.tablero[i][j].getValor());
+                        jFicha.put("flag", this.tablero[i][j].getFlag());
+                        jFicha.put("i", i);
+                        jFicha.put("j", j);
+                        jsonFichas.put(k, jFicha);
+                        k++;
+                    }
+                }
+            }
+            json.put("fichas", jsonFichas);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void ponerFicha(Ficha f, int i, int j){
+        int x = i + 1;
+        int y = j + 1;
+        String pos = x+""+y;
+        libres.removeIf(pos::equals);
+        this.tablero[i][j] = f; //se asigna la ficha a la matriz
+        this.posLibres[i][j] = 1; //actualizar la matriz de posiciones libres
+    }
 
 }
 

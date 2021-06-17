@@ -2,4 +2,8 @@
     <string name="app_name">2048</string>
     <string name="btn_1">Iniciar</string>
     <string name="btn_2">Atrás</string>
+    <string name="exit">Salir</string>
+    <string name="confirmacion">¿Desea realizar esta acción?</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
 </resources>

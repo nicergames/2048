@@ -1,13 +1,16 @@
 package com.nicergames.a2048;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +21,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ActivityJuego extends AppCompatActivity {
 
@@ -36,6 +43,7 @@ public class ActivityJuego extends AppCompatActivity {
     private float x1, y1, x2, y2, dX, dY;
     static final int MIN_MOVE = 150;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +71,9 @@ public class ActivityJuego extends AppCompatActivity {
         }
         txtRecord.setText("Record: "+record);
 
+        //String str1 = existePartida();
+        //Log.d("ESTADO", str1+"");
+
 
 
         tablero = new Tablero(this);
@@ -71,20 +82,45 @@ public class ActivityJuego extends AppCompatActivity {
                 txt31, txt32, txt33, txt34,
                 txt41, txt42, txt43, txt44);
 
+        String estado = existePartida();
+        if(!estado.equals("")){
+            //TODO: Cargar estado
+            JSONArray jsonFichas = null;
+            int i, j, puntos;
+            try {
+                JSONObject jsonEstado = new JSONObject(estado);
+                puntos = jsonEstado.getInt("puntaje");
+                txtPuntaje.setText("Puntaje: "+puntos);
+                tablero.setPuntaje(puntos);
+                jsonFichas = jsonEstado.getJSONArray("fichas");
 
-        //crear 2 fichas en pos aleatorias (estan todas libres)
-        Ficha f1 = new Ficha(2);
-        Ficha f2 = new Ficha(2);
-        tablero.setFichaAleatoria(f1);
-        tablero.setFichaAleatoria(f2);
+                for (int k = 0; k < jsonFichas.length(); k++){
+                    JSONObject jFicha = jsonFichas.getJSONObject(k);
+                    Ficha f = new Ficha(jFicha.getInt("valor"), jFicha.getInt("flag"));
+                    i = jFicha.getInt("i");
+                    j = jFicha.getInt("j");
+                    tablero.ponerFicha(f, i, j);
+                }
+                tablero.actualizarTablero();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //crear 2 fichas en pos aleatorias (estan todas libres)
+            Ficha f1 = new Ficha(2);
+            Ficha f2 = new Ficha(2);
+            tablero.setFichaAleatoria(f1);
+            tablero.setFichaAleatoria(f2);
+        }
     }
 
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         Intent i = new Intent();
         setResult(RESULT_OK, i);
+
         this.finish();
     }
 
@@ -107,12 +143,19 @@ public class ActivityJuego extends AppCompatActivity {
                 //Toast.makeText(this, "RESET", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.share:
-                Toast.makeText(this, "SHARE", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent();
+                i.setAction(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_TEXT, "Mi puntuación record es: "+record);
+                if(i.resolveActivity(getPackageManager()) != null){
+                    startActivity(i);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
     private int leerPreferencias() {
         SharedPreferences preferencias = getPreferences(MODE_PRIVATE);
@@ -135,6 +178,28 @@ public class ActivityJuego extends AppCompatActivity {
         }
     }
 
+    private String existePartida() {
+        Log.d("ESTADO", "Cargando estado");
+        SharedPreferences preferencias = getPreferences(MODE_PRIVATE);
+        String existe = preferencias.getString("estado","");
+
+        return existe;
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+
+        SharedPreferences pref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = pref.edit();
+        ed.putString("estado", tablero.crearJSON());
+        ed.commit();
+
+        Log.d("ESTADO", "Estado guardado");
+        super.onDestroy();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         /*final int X = (int) event.getRawX();
@@ -153,26 +218,23 @@ public class ActivityJuego extends AppCompatActivity {
                     if (Math.abs(dX) > MIN_MOVE) {
                         if (dX < 0) {
                             this.moverIzq();
-                            Toast.makeText(this, "Left", Toast.LENGTH_SHORT).show();
                         } else {
                             this.moverDer();
-                            Toast.makeText(this, "Right", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
                     if (Math.abs(dY) > MIN_MOVE) {
                         if (dY < 0) {
                             this.moverAbajo();
-                            Toast.makeText(this, "Down", Toast.LENGTH_SHORT).show();
                         } else {
                             this.moverArriba();
-                            Toast.makeText(this, "Up", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
                 break;
         }
 
+        //Log.d("JSON", tablero.crearJSON());
         return super.onTouchEvent(event);
     }
 
