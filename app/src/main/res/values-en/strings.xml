@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">2048</string>
+    <string name="btn_1">Start</string>
+    <string name="btn_2">Return</string>
+    <string name="exit">Exit</string>
+    <string name="confirmacion">Are you sure you want to exit?</string>
+    <string name="aceptar">Ok</string>
+    <string name="cancelar">Cancel</string>
+    <string name="puntaje">Score: </string>
+    <string name="puntajeMax">Max Score: </string>
+    <string name="record">My best score is: </string>
+
+    <string name="puntosObtenidos">Final score: </string>
+    <string name="reset">Reset</string>
+    <string name="share">Share</string>
+    <string name="win">You win</string>
+    <string name="lose">You lose</string>
+</resources>
+

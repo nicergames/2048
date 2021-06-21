@@ -25,7 +25,8 @@ public class Tablero {
     private TextView[][] txt; //Matriz de textviews
     private Context context; //contexto/actividad
     private static final int MARCA_FIN = 32; //Puntaje objetivo para ganar
-    private boolean flagFin;
+    private boolean win;
+    private boolean gameOver;
     private boolean mover;
 
     private static int puntaje = 0;
@@ -41,7 +42,8 @@ public class Tablero {
     private void inicializar(){
         this.tablero = new Ficha[4][4];
         this.posLibres = new int[4][4];
-        this.flagFin = false; //Flag de finalizacion
+        this.win = false;
+        this.gameOver = false;
         this.puntaje = 0;
         this.mover = false;
         libres = new ArrayList<String>();
@@ -67,6 +69,15 @@ public class Tablero {
         this.setFichaAleatoria(f1);
         this.setFichaAleatoria(f2);
         //this.actualizarTablero();
+    }
+
+    public boolean win(){
+        return this.win;
+    }
+
+    public boolean gameOver(){
+        //return this.gameOver;
+        return !this.hayLugar();
     }
 
     public void setComponentes(TextView txt11, TextView txt12, TextView txt13, TextView txt14,
@@ -176,6 +187,7 @@ public class Tablero {
             this.txt[fila-1][columna-1].setBackgroundColor(this.colores[1]);
         } else {
             Toast.makeText(this.context, "No hay posiciones vacias para realizar este movimiento", Toast.LENGTH_SHORT).show();
+            this.gameOver = true;
         }
     }
 
@@ -209,7 +221,7 @@ public class Tablero {
             }
         }
 
-        if (this.flagFin){
+        if (this.win){
             //TODO: borrar ultimo estado de partida
             //Toast.makeText(this.context, "WIN!", Toast.LENGTH_SHORT).show();
         }
@@ -251,7 +263,7 @@ public class Tablero {
 
                             //this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                             //Controlar puntaje ganador
-                            if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+                            if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.win = true; }
 
                             //La posicion siguiente queda null porque fue combinada con la actual
                             this.tablero[posSig][j] = null;
@@ -306,7 +318,7 @@ public class Tablero {
 
                             //this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                             //Controlar puntaje ganador
-                            if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+                            if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.win = true; }
 
                             //La posicion siguiente queda null porque fue convinada con la actual
                             this.tablero[posSig][j] = null;
@@ -357,7 +369,7 @@ public class Tablero {
 
                             //this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                             //Controlar puntaje ganador
-                            if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+                            if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.win = true; }
 
                             //La posicion siguiente queda null porque fue convinada con la actual
                             this.tablero[i][posSig] = null;
@@ -408,7 +420,7 @@ public class Tablero {
 
                                     //this.txt[i][j].setBackgroundColor(context.getResources().getIntArray(R.array.background_numbers)[w]);
                                     //Controlar puntaje ganador
-                                    if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.flagFin = true; }
+                                    if (this.tablero[i][j].getValor() == this.MARCA_FIN) { this.win = true; }
 
                                     //La posicion siguiente queda null porque fue convinada con la actual
                                     this.tablero[i][posSig] = null;
@@ -444,7 +456,11 @@ public class Tablero {
             this.setFichaAleatoria();
             this.actualizarTablero();
             this.mover = false;
-        }
+        } /*else {
+            if (!this.hayLugar()){
+                this.gameOver = true;
+            }
+        }*/
     }
 
 

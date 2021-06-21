@@ -6,4 +6,14 @@
     <string name="confirmacion">¿Desea realizar esta acción?</string>
     <string name="aceptar">Aceptar</string>
     <string name="cancelar">Cancelar</string>
+
+    <string name="puntaje">Puntos: </string>
+    <string name="puntajeMax">Record: </string>
+    <string name="record">Mi puntuación record es: </string>
+    <string name="puntosObtenidos">Puntaje obtenido: </string>
+
+    <string name="reset">Reiniciar</string>
+    <string name="share">Compartir</string>
+    <string name="win">Ganaste</string>
+    <string name="lose">Perdiste</string>
 </resources>

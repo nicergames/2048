@@ -5,11 +5,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.Menu;
@@ -69,7 +72,7 @@ public class ActivityJuego extends AppCompatActivity {
         if (record == 0){
             guardarPreferencias(0);
         }
-        txtRecord.setText("Record: "+record);
+        txtRecord.setText(getString(R.string.puntajeMax)+record);
 
         //String str1 = existePartida();
         //Log.d("ESTADO", str1+"");
@@ -90,7 +93,7 @@ public class ActivityJuego extends AppCompatActivity {
             try {
                 JSONObject jsonEstado = new JSONObject(estado);
                 puntos = jsonEstado.getInt("puntaje");
-                txtPuntaje.setText("Puntaje: "+puntos);
+                txtPuntaje.setText(getString(R.string.puntaje)+puntos);
                 tablero.setPuntaje(puntos);
                 jsonFichas = jsonEstado.getJSONArray("fichas");
 
@@ -139,14 +142,13 @@ public class ActivityJuego extends AppCompatActivity {
                 return true;
             case R.id.reset:
                 tablero.reiniciar();
-                txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
-                //Toast.makeText(this, "RESET", Toast.LENGTH_SHORT).show();
+                txtPuntaje.setText(getString(R.string.puntaje)+tablero.getPuntaje());
                 return true;
             case R.id.share:
                 Intent i = new Intent();
                 i.setAction(Intent.ACTION_SEND);
                 i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_TEXT, "Mi puntuación record es: "+record);
+                i.putExtra(Intent.EXTRA_TEXT, getString(R.string.record)+record);
                 if(i.resolveActivity(getPackageManager()) != null){
                     startActivity(i);
                 }
@@ -173,7 +175,7 @@ public class ActivityJuego extends AppCompatActivity {
     private void actualizarRecord(int puntaje){
         if (puntaje > record) {
             record = puntaje;
-            txtRecord.setText("Record: "+record);
+            txtRecord.setText(getString(R.string.puntajeMax)+record);
             guardarPreferencias(record);
         }
     }
@@ -202,8 +204,6 @@ public class ActivityJuego extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        /*final int X = (int) event.getRawX();
-        final int Y = (int) event.getRawY();*/
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 x2 = event.getX();
@@ -221,6 +221,7 @@ public class ActivityJuego extends AppCompatActivity {
                         } else {
                             this.moverDer();
                         }
+                        checkFinJuego();
                     }
                 } else {
                     if (Math.abs(dY) > MIN_MOVE) {
@@ -229,6 +230,7 @@ public class ActivityJuego extends AppCompatActivity {
                         } else {
                             this.moverArriba();
                         }
+                        checkFinJuego();
                     }
                 }
                 break;
@@ -247,7 +249,7 @@ public class ActivityJuego extends AppCompatActivity {
                     for (int j = 0; j < 4; j++) {
                         tablero.up(j);
                         tablero.actualizarTablero();
-                        txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
+                        txtPuntaje.setText(getString(R.string.puntaje)+tablero.getPuntaje());
 
                         actualizarRecord(tablero.getPuntaje());
 
@@ -256,6 +258,8 @@ public class ActivityJuego extends AppCompatActivity {
                 }
                 try { Thread.sleep(DELAY_MAX); } catch (InterruptedException e) { e.printStackTrace(); }
                 tablero.afterMov();
+
+                //checkFinJuego();
             }
         });
         hilo.start();
@@ -269,13 +273,14 @@ public class ActivityJuego extends AppCompatActivity {
                     for (int j = 0; j < 4; j++) {
                         tablero.down(j);
                         tablero.actualizarTablero();
-                        txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
+                        txtPuntaje.setText(getString(R.string.puntaje)+tablero.getPuntaje());
                         actualizarRecord(tablero.getPuntaje());
                         try { Thread.sleep(DELAY_MIN); } catch (InterruptedException e) { e.printStackTrace(); }
                     }
                 }
                 try { Thread.sleep(DELAY_MAX); } catch (InterruptedException e) { e.printStackTrace(); }
                 tablero.afterMov();
+                //checkFinJuego();
             }
         });
         hilo.start();
@@ -289,13 +294,14 @@ public class ActivityJuego extends AppCompatActivity {
                     for (int i = 0; i < 4; i++) {
                         tablero.left(i);
                         tablero.actualizarTablero();
-                        txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
+                        txtPuntaje.setText(getString(R.string.puntaje)+tablero.getPuntaje());
                         actualizarRecord(tablero.getPuntaje());
                         try { Thread.sleep(DELAY_MIN); } catch (InterruptedException e) { e.printStackTrace(); }
                     }
                 }
                 try { Thread.sleep(DELAY_MAX); } catch (InterruptedException e) { e.printStackTrace(); }
                 tablero.afterMov();
+                //checkFinJuego();
             }
         });
         hilo.start();
@@ -309,15 +315,60 @@ public class ActivityJuego extends AppCompatActivity {
                     for (int i = 0; i < 4; i++) {
                         tablero.right(i);
                         tablero.actualizarTablero();
-                        txtPuntaje.setText("Puntaje: "+tablero.getPuntaje());
+                        txtPuntaje.setText(getString(R.string.puntaje)+tablero.getPuntaje());
                         actualizarRecord(tablero.getPuntaje());
                         try { Thread.sleep(DELAY_MIN); } catch (InterruptedException e) { e.printStackTrace(); }
                     }
                 }
                 try { Thread.sleep(DELAY_MAX); } catch (InterruptedException e) { e.printStackTrace(); }
                 tablero.afterMov();
+                //checkFinJuego();
             }
         });
         hilo.start();
+    }
+
+    public void checkFinJuego(){
+        if (tablero.win()){
+            mostrarDlg(1);
+        }
+
+        if (tablero.gameOver()){
+            mostrarDlg(0);
+        }
+    }
+
+    public void mostrarDlg(int msg){
+        //Looper.prepare();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String strMsg = (String) getText(R.string.puntosObtenidos);
+        strMsg = strMsg+" "+tablero.getPuntaje();
+        builder.setMessage(strMsg);
+        if (msg == 1){
+            builder.setTitle(R.string.win);
+        } else {
+            builder.setTitle(R.string.lose);
+        }
+
+        builder.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = new Intent();
+                i.setAction(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_TEXT, getString(R.string.puntosObtenidos)+ tablero.getPuntaje());
+                if(i.resolveActivity(getPackageManager()) != null){
+                    startActivity(i);
+                }
+            }
+        })
+        .setNegativeButton(R.string.reset, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                tablero.reiniciar();
+                txtPuntaje.setText(getString(R.string.puntaje)+tablero.getPuntaje());
+            }
+        });
+        builder.show();
     }
 }
