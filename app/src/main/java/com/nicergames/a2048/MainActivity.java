@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Boton salir
         btnExit = (Button) findViewById(R.id.exit);
         btnExit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        //Con builder crear la ventana modal de confirmacion/alerta
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.confirmacion)
                 .setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
@@ -69,16 +71,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        //super.onSaveInstanceState(outState, outPersistentState);
-        //outState.putString("estado", tablero.crearJSON());
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        //String str = savedInstanceState.getString("estado");
-        //Log.d("JSON", str+"");
-    }
 }

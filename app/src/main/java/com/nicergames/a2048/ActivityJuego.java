@@ -122,7 +122,7 @@ public class ActivityJuego extends AppCompatActivity {
     public void onBackPressed() {
         //super.onBackPressed();
         Intent i = new Intent();
-        setResult(RESULT_OK, i);
+        setResult(RESULT_OK, i); //retornar resultado a la actividad que llamo a esta
 
         this.finish();
     }
@@ -137,8 +137,8 @@ public class ActivityJuego extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
-                this.onBackPressed();
+            case R.id.home: //flecha atras
+                this.onBackPressed(); //accion de presion el boton atras
                 return true;
             case R.id.reset:
                 tablero.reiniciar();
@@ -181,10 +181,8 @@ public class ActivityJuego extends AppCompatActivity {
     }
 
     private String existePartida() {
-        Log.d("ESTADO", "Cargando estado");
         SharedPreferences preferencias = getPreferences(MODE_PRIVATE);
         String existe = preferencias.getString("estado","");
-
         return existe;
     }
 
